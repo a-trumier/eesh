@@ -2,7 +2,6 @@
 #include <cstdio>
 #include <vector>
 
-
 std::string read_input(void)
 {
     /*
@@ -45,7 +44,7 @@ std::vector<std::string> tokenize_input(std::string &inp)
     while (i < inp.length())
     {
         /* White space delimting a token. */
-        if (inp[i] == ' ')
+        if (inp[i] == ' ' || inp[i] == '\n' || inp[i] == EOF)
         {
 
             if (cur_token == "")
@@ -65,5 +64,8 @@ std::vector<std::string> tokenize_input(std::string &inp)
         }
         i++;
     }
+
+    output.push_back(cur_token);
+
     return output;
 }

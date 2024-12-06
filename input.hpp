@@ -2,6 +2,7 @@
 #define __INPUT_EESH__
 
 #include <string>
+#include <vector>
 
 /*
  * Take in input from the stdin and returns a string of the input.

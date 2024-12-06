@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "../input.hpp"
 #include <vector>
+#include "../launcher.hpp"
 
 int main()
 {
@@ -12,5 +13,7 @@ int main()
     {
         printf("Token %ld: %s\n", i, lol[i].c_str());
     }
+
+    launch_command(lol);
     return 0;
 }
