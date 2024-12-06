@@ -1,6 +1,6 @@
 #include <string>
 #include <cstdio>
-#include :
+#include <vector>
 
 
 std::string read_input(void)
@@ -33,4 +33,37 @@ std::string read_input(void)
             buf += cur_char;
         }
     }
+}
+
+std::vector<std::string> tokenize_input(std::string &inp)
+{
+    std::vector<std::string> output;
+
+    long unsigned int i = 0;
+
+    std::string cur_token = "";
+    while (i < inp.length())
+    {
+        /* White space delimting a token. */
+        if (inp[i] == ' ')
+        {
+
+            if (cur_token == "")
+            {
+                perror("Error: Command cannot begin with a whitespace.\n");
+                return output;
+            }
+            else
+            {
+                output.push_back(cur_token);
+                cur_token = "";
+            }
+        }
+        else
+        {
+            cur_token += inp[i];
+        }
+        i++;
+    }
+    return output;
 }
