@@ -21,7 +21,6 @@ char** convert_tokens(std::vector<std::string> &tokens)
         strcpy(ret_val[i], tokens[i].c_str());
     }
     ret_val[tokens.size()] = NULL;
-    printf("Allocated array.\n");
     return ret_val;
 }
 
@@ -48,7 +47,6 @@ int launch_command(std::vector<std::string> &tokens)
     /* Child case */
     if (pid == 0)
     {
-        printf("Hello from child. About to exec arg.\n");
         if (execvp(args[0], args) == -1)
         {
             perror("Error: Command invalid.\n");

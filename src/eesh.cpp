@@ -1,18 +1,15 @@
 #include <stdio.h>
-#include "../input.hpp"
+#include <input.hpp>
 #include <vector>
-#include "../launcher.hpp"
+#include <launcher.hpp>
+#include <environment.hpp>
 
 int main()
 {
+    Environment env = Environment();
+    printf(env.get_variable("PS1").value.c_str());
     std::string haha = read_input();
-    std::vector<std::string> lol = tokenize_input(haha);
-    printf("Input: %s\n", haha.c_str());
-
-    for (long unsigned int i = 0; i < lol.size(); i++)
-    {
-        printf("Token %ld: %s\n", i, lol[i].c_str());
-    }
+    std::vector<std::string> lol = tokenize_input(haha); 
 
     launch_command(lol);
     return 0;
