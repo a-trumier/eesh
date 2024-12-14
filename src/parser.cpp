@@ -1,11 +1,13 @@
 #include <parser.hpp>
+#include <environment.hpp>
 
 #include <string>
 #include <vector>
 using namespace std;
 /* I hates it! */
 
-vector<vector<string>> generate_parsed_tokens(vector<string> input)
+vector<vector<string>> generate_parsed_tokens(vector<string> input, 
+        Environment env)
 {
     vector<vector<string>> all_commands;
     all_commands.push_back(vector<string>());
@@ -39,6 +41,16 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input)
                     cur_command++;
                     should_add = false;
                 }
+            }
+            else if (input[i][j] == '$')
+            {
+                string name = "";
+                for (unsigned int k = (j + 1); k < input[i].size(); k++)
+                {
+                    name += input[i][k];
+                }
+                full_token += env.get_variable(name).value;
+                break;
             }
             else
             {

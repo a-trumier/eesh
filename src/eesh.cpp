@@ -7,11 +7,12 @@
 
 int main()
 {
-    Environment env = Environment();
-    printf(env.get_variable("PS1").value.c_str());
+    Environment env1 = Environment();
+    printf(env1.get_variable("PS1").value.c_str());
     std::string haha = read_input();
     std::vector<std::string> lol = tokenize_input(haha); 
-    std::vector<std::vector<std::string>> full = generate_parsed_tokens(lol);
+    std::vector<std::vector<std::string>> full = generate_parsed_tokens(lol, 
+            env1);
 
     for (unsigned long int i = 0; i < full.size(); i++)
     {

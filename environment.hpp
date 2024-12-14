@@ -1,5 +1,5 @@
 #ifndef __EESH_ENVIRONMENT__
-#define __EESH_ENIVORNMENT__
+#define __EESH_ENVIRONMENT__
 
 #include <string>
 #include <vector>

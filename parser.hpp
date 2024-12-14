@@ -1,6 +1,8 @@
 #ifndef __EESH_PARSER__
 #define __EESH_PARSER__
 
+#include <environment.hpp>
+
 #include <vector>
 #include <string>
 using namespace std;
@@ -12,6 +14,7 @@ using namespace std;
  * Note: This does shell expansion as well as parses special characters
  * into multiple command line arguments. 
  */
-vector<vector<string>> generate_parsed_tokens(vector<string> input);
+vector<vector<string>> generate_parsed_tokens(vector<string> input, 
+        Environment env);
 
 #endif
