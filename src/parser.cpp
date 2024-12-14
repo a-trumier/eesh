@@ -35,7 +35,7 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
                 }
                 else
                 {
-                    /* Just don't do anything. Nice and simple. */
+                    /* Just add command and create new one. Nice and simple. */
                     all_commands[cur_command].push_back(full_token);
                     all_commands.push_back(vector<string>());
                     cur_command++;

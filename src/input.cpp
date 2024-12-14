@@ -28,7 +28,6 @@ std::string read_input(void)
         {
             return buf;
         }
-
         /* Otherwise, just add to the buffer and iterate */
         else
         {
@@ -47,7 +46,9 @@ std::vector<std::string> tokenize_input(std::string &inp)
     while (i < inp.length())
     {
         /* White space delimting a token. */
-        if (inp[i] == ' ' || inp[i] == '\n' || inp[i] == EOF)
+        if ((inp[i] == ' ' && (i + 1) < inp.length())
+                || (inp[i] == '\n' && (i + 1) < inp.length()) 
+                || (inp[i] == EOF && (i + 1) < inp.length()))
         {
 
             if (cur_token == "")
@@ -68,6 +69,8 @@ std::vector<std::string> tokenize_input(std::string &inp)
         i++;
     }
 
+    if (cur_token.back() == ' ')
+        cur_token.pop_back();
     output.push_back(cur_token);
 
     return output;
