@@ -8,21 +8,25 @@
 int main()
 {
     Environment env1 = Environment();
-    printf(env1.get_variable("PS1").value.c_str());
-    std::string haha = read_input();
-    std::vector<std::string> lol = tokenize_input(haha); 
-    std::vector<std::vector<std::string>> full = generate_parsed_tokens(lol, 
-            env1);
 
-    for (unsigned long int i = 0; i < full.size(); i++)
+    while (1)
     {
-        printf("Cur command: %ld\n\n", i);
-        for (unsigned long int j = 0; j < full[i].size(); j++)
+        printf(env1.get_variable("PS1").value.c_str());
+        std::string input = read_input();
+        std::vector<std::string> tokenized = tokenize_input(input); 
+        std::vector<std::vector<std::string>> 
+            full = generate_parsed_tokens(tokenized, env1);
+        
+        int code;
+        for (unsigned int i = 0; i < full.size(); i++)
         {
-            printf("Cur token: %s\n", full[i][j].c_str());
+            code = launch_command(full[i], env1);
+        }
+        /* Specific return codes from launch_commands */
+        if (code == 231)
+        {
+            break;
         }
     }
-
-    launch_command(full[0]);
     return 0;
 }

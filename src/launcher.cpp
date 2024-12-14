@@ -38,10 +38,16 @@ void free_tokens(char** free_vals, long unsigned int size)
     free(free_vals);
 }
 
-int launch_command(std::vector<std::string> &tokens)
+int launch_command(std::vector<std::string> &tokens, Environment env)
 {
     pid_t pid, wpid;
     int status_code;
+
+    if (tokens[0].compare("exit") == 0)
+    {
+        /* Exit code */
+        return 231;
+    }
 
     char** args = convert_tokens(tokens);
 
@@ -49,9 +55,10 @@ int launch_command(std::vector<std::string> &tokens)
     /* Child case */
     if (pid == 0)
     {
+        chdir(env.get_variable("PWD").name.c_str());
         if (execvp(args[0], args) == -1)
         {
-            perror("Error: Command invalid.\n");
+            perror("Error");
         }
         return -1;
     }

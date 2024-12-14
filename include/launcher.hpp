@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <environment.hpp>
 
-int launch_command(std::vector<std::string> &tokens);
+int launch_command(std::vector<std::string> &tokens, Environment env);
 
 #endif
