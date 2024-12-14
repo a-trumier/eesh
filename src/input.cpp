@@ -1,6 +1,9 @@
+#include <input.hpp>
+
 #include <string>
 #include <cstdio>
 #include <vector>
+
 
 std::string read_input(void)
 {
