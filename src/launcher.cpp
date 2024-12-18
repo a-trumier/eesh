@@ -59,12 +59,14 @@ int launch_command(std::vector<std::string> &tokens, Environment env)
         if (execvp(args[0], args) == -1)
         {
             perror("Error");
+            exit(1);
         }
-        return -1;
+        /* Should never get to this level. Failsafe */
+        exit(1);
     }
     else if (pid < 0)
     {
-        perror("Error: Forking error.");
+        perror("Error: Forking error.\n");
         return -1;
     }
     else
@@ -72,6 +74,7 @@ int launch_command(std::vector<std::string> &tokens, Environment env)
         do
         {
             wpid = waitpid(pid, &status_code, WUNTRACED);
+            printf("%d\n", status_code);
         } 
         while (!WIFEXITED(status_code) && !WIFSIGNALED(status_code));
     }
