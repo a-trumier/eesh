@@ -54,18 +54,16 @@ std::string get_prior_directory(std::string p)
 {
     for (unsigned long int i = (p.length() - 1); i != 0; i--)
     {
-        printf("Get prior directory cur char: %c\n", p[i]);
         if (i != p.length() - 1 && p[i] == '/')
         {
-            printf("Return val of get_prior: %s\n", p.substr(0, i).c_str());
             return p.substr(0, i);
         }
     }
-    return ""; /* Catch case */
+    return "/"; /* Catch case */
 }
 
 
-std::string parse_relative_path(std::string p, Environment env)
+std::string parse_relative_path(std::string p, Environment* env)
 {
     /*
      * A relative path is effectively any string which has a forward slash in
@@ -75,13 +73,10 @@ std::string parse_relative_path(std::string p, Environment env)
      * just return the PWD + the path we have been given.
      */
 
-    std::string ret_path = env.get_variable("PWD").value + "/";
-    std::string temp_working_directory = env.get_variable("PWD").value;
-    printf("Starting working_dir: %s\n", temp_working_directory.c_str());
+    std::string ret_path = env->get_variable("PWD").value + "/";
+    std::string temp_working_directory = env->get_variable("PWD").value;
     for (unsigned int i = 0; i < p.length(); i++)
     {
-        printf("Cur ret path: %s\n", ret_path.c_str());
-        printf("Cur char read: %c\n", p[i]);
         if (p[i] == '.')
         {
             /* First, ensure that the next character is valid and a dot. */
@@ -116,7 +111,7 @@ std::string parse_relative_path(std::string p, Environment env)
     return ret_path;
 }
 
-std::string find_command_path(std::string command, Environment env)
+std::string find_command_path(std::string command, Environment* env)
 {
     /* 
      * If we encounter a shell builtin, just pass the command through 
@@ -127,7 +122,7 @@ std::string find_command_path(std::string command, Environment env)
     {
         return command;
     }
-    std::string p = env.get_variable("PATH").value;
+    std::string p = env->get_variable("PATH").value;
 
     if (p.compare("") == 0)
     {
@@ -140,7 +135,6 @@ std::string find_command_path(std::string command, Environment env)
     {
         std::string full_path = parsed_path[i] + "/" + command;
         
-        printf("Full path: %s\n", full_path.c_str());
         if (file_exists(full_path))
         {
             return full_path;

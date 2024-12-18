@@ -13,7 +13,7 @@ using namespace std;
  * Note: Returns -1 if ANY relative path in the set is bad. Otherwise
  * returns 0.
  */
-int expand_relative_paths(vector<string> input, Environment env)
+int expand_relative_paths(vector<string> input, Environment* env)
 {
     for (unsigned long int i = 0; i < input.size(); i++)
     {
@@ -48,7 +48,7 @@ int expand_relative_paths(vector<string> input, Environment env)
 }
 
 vector<vector<string>> generate_parsed_tokens(vector<string> input, 
-        Environment env)
+        Environment *env)
 {
     vector<vector<string>> all_commands;
     all_commands.push_back(vector<string>());
@@ -90,7 +90,7 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
                 {
                     name += input[i][k];
                 }
-                full_token += env.get_variable(name).value;
+                full_token += env->get_variable(name).value;
                 break;
             }
             else

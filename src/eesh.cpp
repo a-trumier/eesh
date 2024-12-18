@@ -16,12 +16,12 @@ int main()
         std::string input = read_input();
         std::vector<std::string> tokenized = tokenize_input(input); 
         std::vector<std::vector<std::string>> 
-            full = generate_parsed_tokens(tokenized, env1);
+            full = generate_parsed_tokens(tokenized, &env1);
         
         int code;
         for (unsigned int i = 0; i < full.size(); i++)
         {
-            code = launch_command(full[i], env1);
+            code = launch_command(full[i], &env1);
         }
         /* Specific return codes from launch_commands */
         if (code == 231)

@@ -14,12 +14,12 @@
  * Later changes may override this necessity and just pass in the PWD
  * variable
  */
-std::string parse_relative_path(std::string p, Environment env);
+std::string parse_relative_path(std::string p, Environment* env);
 
 /*
  * Given a command, return the absolute path of the command. Return empty
  * string if no command is found.
  */
-std::string find_command_path(std::string command, Environment env);
+std::string find_command_path(std::string command, Environment* env);
 
 #endif

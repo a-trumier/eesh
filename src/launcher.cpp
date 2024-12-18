@@ -41,7 +41,7 @@ void free_tokens(char** free_vals, long unsigned int size)
     free(free_vals);
 }
 
-int launch_command(std::vector<std::string> &tokens, Environment env)
+int launch_command(std::vector<std::string> &tokens, Environment* env)
 {
     pid_t pid, wpid;
     int status_code;
@@ -73,8 +73,9 @@ int launch_command(std::vector<std::string> &tokens, Environment env)
             {
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
-            }
-            env.set_variable("PWD", tokens[1]);
+            };
+            env->set_variable("PWD", tokens[1]);
+            env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
             return 0;
         }
         else
@@ -87,7 +88,8 @@ int launch_command(std::vector<std::string> &tokens, Environment env)
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
             }
-            env.set_variable("PWD", correct_path);
+            env->set_variable("PS1", "[ " + correct_path + " ] $ ");
+            env->set_variable("PWD", correct_path);
             return 0;
         }
 
@@ -100,7 +102,13 @@ int launch_command(std::vector<std::string> &tokens, Environment env)
     /* Child case */
     if (pid == 0)
     {
-        chdir(env.get_variable("PWD").name.c_str());
+        std::string change_path = env->get_variable("PWD").value + "/";
+        int r_val = chdir(change_path.c_str());
+        if (r_val < 0)
+        {
+            printf("Chdir error: %d\n", r_val);
+            exit(0);
+        }
         if (execvp(args[0], args) == -1)
         {
             perror("Error");
