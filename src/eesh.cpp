@@ -4,6 +4,7 @@
 #include <launcher.hpp>
 #include <environment.hpp>
 #include <parser.hpp>
+#include <path.hpp>
 
 int main()
 {
