@@ -1,5 +1,5 @@
 CXX=g++
-CXXFLAGS=-Wall -Wextra -I./include -std=c++17 -O2 
+CXXFLAGS=-g -Wall -Wextra -I./include -std=c++17 -O2 
 LDFLAGS=
 
 .PHONY=all clean folders
