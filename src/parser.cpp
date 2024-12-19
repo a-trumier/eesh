@@ -1,5 +1,5 @@
 #include <parser.hpp>
-#include <environment.hpp>
+#include <common_classes.hpp>
 #include <path.hpp>
 
 #include <string>
@@ -90,7 +90,7 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
                 {
                     name += input[i][k];
                 }
-                full_token += env->get_variable(name).value;
+                full_token += env->get_value(name);
                 break;
             }
             else

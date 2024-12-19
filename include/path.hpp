@@ -1,7 +1,7 @@
 #ifndef __EESH_PATH__
 #define __EESH_PATH__
 
-#include <environment.hpp>
+#include <common_classes.hpp>
 #include <vector>
 #include <string>
 

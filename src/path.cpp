@@ -1,5 +1,5 @@
 #include <path.hpp>
-#include <environment.hpp>
+#include <common_classes.hpp>
 #include <string>
 #include <vector>
 #include <stdio.h>
@@ -73,8 +73,8 @@ std::string parse_relative_path(std::string p, Environment* env)
      * just return the PWD + the path we have been given.
      */
 
-    std::string ret_path = env->get_variable("PWD").value + "/";
-    std::string temp_working_directory = env->get_variable("PWD").value;
+    std::string ret_path = env->get_value("PWD") + "/";
+    std::string temp_working_directory = env->get_value("PWD");
     for (unsigned int i = 0; i < p.length(); i++)
     {
         if (p[i] == '.')
@@ -122,7 +122,7 @@ std::string find_command_path(std::string command, Environment* env)
     {
         return command;
     }
-    std::string p = env->get_variable("PATH").value;
+    std::string p = env->get_value("PATH");
 
     if (p.compare("") == 0)
     {

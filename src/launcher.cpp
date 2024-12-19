@@ -1,5 +1,6 @@
 #include <launcher.hpp>
 #include <path.hpp>
+#include <common_classes.hpp>
 
 #include <vector>
 #include <string>
@@ -74,7 +75,6 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
             };
-            env->set_variable("PWD", tokens[1]);
             env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
             return 0;
         }
@@ -88,7 +88,6 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
             }
-            env->set_variable("PS1", "[ " + correct_path + " ] $ ");
             env->set_variable("PWD", correct_path);
             return 0;
         }
@@ -102,7 +101,7 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
     /* Child case */
     if (pid == 0)
     {
-        std::string change_path = env->get_variable("PWD").value + "/";
+        std::string change_path = env->get_value("PWD") + "/";
         int r_val = chdir(change_path.c_str());
         if (r_val < 0)
         {
