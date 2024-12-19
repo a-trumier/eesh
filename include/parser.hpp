@@ -15,6 +15,6 @@ using namespace std;
  * into multiple command line arguments. 
  */
 vector<vector<string>> generate_parsed_tokens(vector<string> input, 
-        Environment env);
+        Environment* env);
 
 #endif

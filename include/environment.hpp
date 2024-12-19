@@ -24,6 +24,12 @@ class Environment
     public:
         Environment();
         EnvironmentVariable get_variable(std::string name);
+
+        /*
+         * Returns 0 if the new value is set, returns 1 if it cannot find
+         * the variable.
+         */
+        int set_variable(std::string name, std::string new_val);
         int create_variable(std::string name, std::string value); 
 };
 

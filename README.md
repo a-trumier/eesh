@@ -34,7 +34,7 @@ Easily Extendible Shell is a custom shell written in C++, created as a learning 
     ```
 ## Usage
 
-Start the shell by running ./ees. Enter commands as you would in a standard shell. Some examples:
+Start the shell by running ./bin/eesh. Enter commands as you would in a standard shell. Some examples:
 
 - Running a command:
     ```eesh
