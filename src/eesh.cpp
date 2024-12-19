@@ -9,11 +9,11 @@
 int main()
 {
     Environment env1 = Environment();
-
+    
     while (1)
     {
         printf(env1.get_value("PS1").c_str());
-        std::string input = read_input();
+        std::string input = clean_whitespace(read_input());
         std::vector<std::string> tokenized = tokenize_input(input); 
         std::vector<std::vector<std::string>> 
             full = generate_parsed_tokens(tokenized, &env1);

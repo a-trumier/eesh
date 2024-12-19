@@ -34,7 +34,7 @@ Environment::Environment()
     temp_path += get_value("PWD") + "/.local/bin:" 
         + get_value("PWD") + "/bin";
     /* Now we can put system wide binary places here.*/
-    temp_path += "bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin";
+    temp_path += ":/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin";
     variables["PATH"] = temp_path;
 }
 

@@ -115,3 +115,45 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
     }
     return all_commands;
 }
+
+string clean_whitespace(string s)
+{
+    string ret_s = "";
+    unsigned long int cur_counter = 0;
+    /* First, clean whitespace prior to first character */
+    while (cur_counter < s.length())
+    {
+        if (s[cur_counter] != ' ')
+        {
+            break;
+        }
+        cur_counter++;
+    }
+    /* Clean the rest of the string */
+    while (cur_counter < s.length())
+    {
+        if (cur_counter != 0 && s[cur_counter] == ' ')
+        {
+            if (s[cur_counter-1] == ' ')
+            {    
+                cur_counter++;
+                continue;
+            }
+            else
+                ret_s += s[cur_counter];
+        }
+        else
+        {
+            ret_s += s[cur_counter];
+        }
+        cur_counter++;
+    }
+
+    /* Clean the final character */
+    if (ret_s[ret_s.length() - 1] == ' ')
+    {
+        ret_s = ret_s.substr(0, ret_s.length() - 1);
+    }
+
+    return ret_s;
+}
