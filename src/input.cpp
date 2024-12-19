@@ -18,6 +18,7 @@ std::string read_input(void)
     while (1)
     {
         cur_char = getchar();
+        
 
         /* 
          * Case where user wants us to actually do a command. This will
