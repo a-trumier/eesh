@@ -1,7 +1,7 @@
 #ifndef __EESH_PARSER__
 #define __EESH_PARSER__
 
-#include <environment.hpp>
+#include <common_classes.hpp>
 
 #include <vector>
 #include <string>
@@ -16,5 +16,12 @@ using namespace std;
  */
 vector<vector<string>> generate_parsed_tokens(vector<string> input, 
         Environment* env);
+
+/*
+ * Given a string s, ensure that there is no whitespace prior to or after the
+ * end of the last character, and ensure all whitespace inbetween characters
+ * is a single whitespace.
+ */
+string clean_whitespace(string s);
 
 #endif

@@ -1,5 +1,6 @@
 #include <launcher.hpp>
 #include <path.hpp>
+#include <common_classes.hpp>
 
 #include <vector>
 #include <string>
@@ -46,13 +47,26 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
     pid_t pid, wpid;
     int status_code;
 
-    if (tokens[0].compare("exit") == 0)
+    if (tokens[0].length() == 0)
+    {
+        /*
+         * Solves weird error with perror call, when I replace this with perror
+         * it prints no such file or directory even though i'm not forking.
+         * Probably an RTFM moment but I cannot be bothered at this moment.
+         * TODO: Fix this garbage?
+         */
+        fprintf(stderr, 
+                "Error: Command not found. Is it in your PATH variable?\n");
+        return 1;
+    }
+
+    else if (tokens[0].compare("exit") == 0)
     {
         /* Exit code */
         return 231;
     }
     
-    if (tokens[0].compare("cd") == 0)
+    else if (tokens[0].compare("cd") == 0)
     {
         if (tokens.size() > 2)
         {
@@ -74,7 +88,6 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
             };
-            env->set_variable("PWD", tokens[1]);
             env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
             return 0;
         }
@@ -88,50 +101,69 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
                 perror("Error: Path given to cd is not a directory\n");
                 return 1;
             }
-            env->set_variable("PS1", "[ " + correct_path + " ] $ ");
             env->set_variable("PWD", correct_path);
             return 0;
         }
 
-        
     }
 
-    char** args = convert_tokens(tokens);
+    else if (tokens[0].compare("export") == 0)
+    {
+        /* 
+         * Export command. Allows creation of a new variable, so just
+         * error check that we have two tokens. Export works a bit differently
+         * in eesh
+         */
 
-    pid = fork();
-    /* Child case */
-    if (pid == 0)
-    {
-        std::string change_path = env->get_variable("PWD").value + "/";
-        int r_val = chdir(change_path.c_str());
-        if (r_val < 0)
+        if (tokens.size() != 3)
         {
-            printf("Chdir error: %d\n", r_val);
-            exit(0);
+            perror("Error: Given export not valid.\n");
+            return 1;
         }
-        if (execvp(args[0], args) == -1)
-        {
-            perror("Error");
-            /* Need to exit here because we are in child process. */
-            exit(1);
-        }
-        /* Should never get to this level. Failsafe */
-        exit(1);
-    }
-    else if (pid < 0)
-    {
-        perror("Error: Forking error.\n");
-        return -1;
+
+        env->set_variable(tokens[1], tokens[2]);
+        return 0;
     }
     else
     {
-        do
-        {
-            wpid = waitpid(pid, &status_code, WUNTRACED);
-        } 
-        while (!WIFEXITED(status_code) && !WIFSIGNALED(status_code));
-    }
 
-    free_tokens(args, tokens.size() + 1);
-    return 0;
+        char** args = convert_tokens(tokens);
+
+        pid = fork();
+        /* Child case */
+        if (pid == 0)
+        {
+            std::string change_path = env->get_value("PWD") + "/";
+            int r_val = chdir(change_path.c_str());
+            if (r_val < 0)
+            {
+                printf("Chdir error: %d\n", r_val);
+                exit(0);
+            }
+            if (execvp(args[0], args) == -1)
+            {
+                perror("Error");
+                /* Need to exit here because we are in child process. */
+                exit(1);
+            }
+            /* Should never get to this level. Failsafe */
+            exit(1);
+        }
+        else if (pid < 0)
+        {
+            perror("Error: Forking error.\n");
+            return -1;
+        }
+        else
+        {
+            do
+            {
+                wpid = waitpid(pid, &status_code, WUNTRACED);
+            } 
+            while (!WIFEXITED(status_code) && !WIFSIGNALED(status_code));
+        }
+
+        free_tokens(args, tokens.size() + 1);
+        return 0;
+    }
 }
