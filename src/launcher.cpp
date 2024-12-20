@@ -1,6 +1,8 @@
 #include <launcher.hpp>
 #include <path.hpp>
 #include <common_classes.hpp>
+#include <input.hpp>
+#include <parser.hpp>
 
 #include <vector>
 #include <string>
@@ -42,11 +44,131 @@ void free_tokens(char** free_vals, long unsigned int size)
     free(free_vals);
 }
 
-int launch_command(std::vector<std::string> &tokens, Environment* env)
+int builtin_exit()
+{
+    return 231;
+}
+
+int builtin_cd(std::vector<std::string> &tokens, Environment* env)
+{
+    if (tokens.size() > 2)
+    {
+        fprintf(stderr, "Error: Too many arguments\n");
+        return -1;
+    }
+    if (tokens.size() == 1)
+    {
+        fprintf(stderr, "Error: Too few arguments\n");
+        return -1;
+    }
+
+    if (tokens[1][0] == '/')
+    {
+        /* Absolute path. So who cares! Thats our new PWD */
+        std::filesystem::path p = tokens[1];
+        if (!std::filesystem::is_directory(p))
+        {
+            fprintf(stderr, "Error: Path given to cd is not a directory\n");
+            return 1;
+        };
+        env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
+        return 0;
+    }
+    else
+    {
+        /* Convert to absolute and then pop it in. */
+        std::string correct_path = parse_relative_path(tokens[1], env);
+        std::filesystem::path p = correct_path;
+        if (!std::filesystem::is_directory(p))
+        {
+            fprintf(stderr, "Error: Path given to cd is not a directory\n");
+            return 1;
+        }
+        env->set_variable("PWD", correct_path);
+        return 0;
+    }
+}
+
+int builtin_export(std::vector<std::string> &tokens, Environment* env)
+{
+
+    /* 
+     * Export command. Allows creation of a new variable, so just
+     * error check that we have two tokens. Export works a bit differently
+     * in eesh
+     */
+
+    if (tokens.size() != 3)
+    {
+        perror("Error: Given export not valid.\n");
+        return 1;
+    }
+
+    env->set_variable(tokens[1], tokens[2]);
+    return 0;
+}
+
+int builtin_history(std::vector<std::string> &tokens, Environment* env,
+        History* his)
+{
+    if (tokens.size() != 2 && tokens.size() != 1)
+    {
+        fprintf(stderr, "Error: History given incorrect amount of arguments\n");
+        return 1;
+    }
+
+    if (tokens.size() == 1)
+    {
+        fprintf(stdout, 
+        "History Help\n\nTo use history command, use history [option].");
+        fprintf(stdout, 
+        "\n\nOptions:\nlist - lists all items in history\nclear - clears history");
+        fprintf(stdout, 
+        "\n<any number> - executes command at history index given in list\n");
+        return 0;
+    }
+    else
+    {
+        if (tokens[1].compare("list") == 0)
+        {
+            his->print_history();
+            return 0;
+        }
+        else if (tokens[1].compare("clear") == 0)
+        {
+            his->clear_history();
+            return 0;
+        }
+        else
+        {
+            int x = std::stoi(tokens[1]);
+            x--;
+            if (x < 0 || x >= his->get_max_history())
+            {
+                fprintf(stderr, 
+                        "Error: Invalid number given to history command.\n");
+                return 1;
+            }
+            std::string input = his->get_history_at_index(x);
+            std::vector<std::vector<std::string>> true_command = 
+                generate_parsed_tokens(tokenize_input(input), env);
+            launch_command(true_command[0], env, his);
+            return 0;
+        }
+    }
+}
+
+int launch_command(std::vector<std::string> &tokens, Environment* env,
+        History* his)
 {
     pid_t pid, wpid;
     int status_code;
 
+    /*
+     * This elif block looks awful.
+     *
+     * TODO: Change to switch statement.
+     */
     if (tokens[0].length() == 0)
     {
         /*
@@ -63,66 +185,21 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
     else if (tokens[0].compare("exit") == 0)
     {
         /* Exit code */
-        return 231;
+        return builtin_exit();
     }
     
     else if (tokens[0].compare("cd") == 0)
     {
-        if (tokens.size() > 2)
-        {
-            fprintf(stderr, "Error: Too many arguments\n");
-            return -1;
-        }
-        if (tokens.size() == 1)
-        {
-            fprintf(stderr, "Error: Too few arguments\n");
-            return -1;
-        }
-
-        if (tokens[1][0] == '/')
-        {
-            /* Absolute path. So who cares! Thats our new PWD */
-            std::filesystem::path p = tokens[1];
-            if (!std::filesystem::is_directory(p))
-            {
-                fprintf(stderr, "Error: Path given to cd is not a directory\n");
-                return 1;
-            };
-            env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
-            return 0;
-        }
-        else
-        {
-            /* Convert to absolute and then pop it in. */
-            std::string correct_path = parse_relative_path(tokens[1], env);
-            std::filesystem::path p = correct_path;
-            if (!std::filesystem::is_directory(p))
-            {
-                fprintf(stderr, "Error: Path given to cd is not a directory\n");
-                return 1;
-            }
-            env->set_variable("PWD", correct_path);
-            return 0;
-        }
-
+        return builtin_cd(tokens, env);
     }
 
     else if (tokens[0].compare("export") == 0)
     {
-        /* 
-         * Export command. Allows creation of a new variable, so just
-         * error check that we have two tokens. Export works a bit differently
-         * in eesh
-         */
-
-        if (tokens.size() != 3)
-        {
-            perror("Error: Given export not valid.\n");
-            return 1;
-        }
-
-        env->set_variable(tokens[1], tokens[2]);
-        return 0;
+        return builtin_export(tokens, env);
+    }
+    else if (tokens[0].compare("history") == 0)
+    {
+        return builtin_history(tokens, env, his);
     }
     else
     {

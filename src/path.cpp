@@ -118,7 +118,8 @@ std::string find_command_path(std::string command, Environment* env)
      * and don't worry about it. TODO: Optimize this, perhaps a member in env
      * class or an enum or something. This just causes headache.
      */
-    if (command == "exit" || command == "cd" || command == "export")
+    if (command == "exit" || command == "cd" || command == "export"
+            || command == "history")
     {
         return command;
     }
