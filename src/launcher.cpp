@@ -70,12 +70,12 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
     {
         if (tokens.size() > 2)
         {
-            perror("Error: Too many arguments\n");
+            fprintf(stderr, "Error: Too many arguments\n");
             return -1;
         }
         if (tokens.size() == 1)
         {
-            perror("Error: Too few arguments\n");
+            fprintf(stderr, "Error: Too few arguments\n");
             return -1;
         }
 
@@ -85,7 +85,7 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
             std::filesystem::path p = tokens[1];
             if (!std::filesystem::is_directory(p))
             {
-                perror("Error: Path given to cd is not a directory\n");
+                fprintf(stderr, "Error: Path given to cd is not a directory\n");
                 return 1;
             };
             env->set_variable("PS1", "[ " + tokens[1] + " ] $ ");
@@ -98,7 +98,7 @@ int launch_command(std::vector<std::string> &tokens, Environment* env)
             std::filesystem::path p = correct_path;
             if (!std::filesystem::is_directory(p))
             {
-                perror("Error: Path given to cd is not a directory\n");
+                fprintf(stderr, "Error: Path given to cd is not a directory\n");
                 return 1;
             }
             env->set_variable("PWD", correct_path);

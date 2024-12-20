@@ -11,9 +11,11 @@ Environment::Environment()
     /* TODO: Read from config files on initialize.*/ 
     
     /* First, get the username of user. */
+
     /* 
-     * Thanks tanpero! 
-     * https://github.com/tanpero/getUserName/blob/master/src/getUserName.cc 
+     * Thanks tanpero! Note that this is also under the same license as that
+     * project
+     * https://github.com/tanpero/getUserName 
      * */
     uid_t userid;
     struct passwd* pwd;

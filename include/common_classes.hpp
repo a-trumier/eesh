@@ -28,4 +28,28 @@ class Environment
         void set_variable(std::string name, std::string new_val);
 };
 
+/*
+ * Holds the history of the user in a buffer.
+ */
+class History
+{
+    private:
+        std::string dotfile_path;
+        FILE* dotfile;
+        std::vector<std::string> history_list;
+        int max_history;
+
+        /*
+         * Writes 
+         */
+        int write_history_to_file();
+    public:
+        /*
+         * Adds a given command to the history list.
+         */
+        void add_to_history(std::string command);
+
+        void 
+};
+
 #endif
