@@ -3,7 +3,7 @@
 #include <pwd.h>
 #include <string>
 #include <unordered_map>
-
+#include <cstring>
 /* ENVIRONMENT CLASS */
 
 Environment::Environment()
@@ -46,4 +46,57 @@ std::string Environment::get_value(std::string name)
 void Environment::set_variable(std::string name, std::string val)
 {
     variables[name] = val;
+}
+
+/* COMMAND CLASS */
+
+Command::Command(std::vector<std::string> t, std::string i, std::string o, 
+        std::string e, Command* p)
+{
+    tokens = t;
+    in = i;
+    out = o;
+    err = e;
+    piped_to = p;
+}
+
+char** Command::get_tokens()
+{
+    char** ret_val = (char**) malloc(sizeof(char*)*(tokens.size() + 1));
+    for (long unsigned int i = 0; i < tokens.size(); i++)
+    {
+        ret_val[i] = (char*) malloc(sizeof(char) * (tokens[i].length() + 1));
+        strcpy(ret_val[i], tokens[i].c_str());
+    }
+    ret_val[tokens.size()] = NULL;
+    return ret_val;
+}
+
+void Command::free_tokens(char** free_vals, long unsigned int size)
+{
+    for (long unsigned int i = 0; i < size; i++)
+    {
+        free(free_vals[i]);
+    }
+    free(free_vals);
+}
+
+void Command::add_token(std::string tok)
+{
+    tokens.push_back(tok);
+}
+
+std::string Command::get_command()
+{
+    return tokens[0];
+}
+
+void Command::set_command(std::string new_cmd)
+{
+    tokens[0] = new_cmd;
+}
+
+std::vector<std::string> Command::get_tokens_vec()
+{
+    return tokens;
 }

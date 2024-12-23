@@ -47,11 +47,11 @@ int expand_relative_paths(vector<string> input, Environment* env)
     return 0;
 }
 
-vector<vector<string>> generate_parsed_tokens(vector<string> input, 
+vector<Command> generate_commands(vector<string> input, 
         Environment *env)
 {
-    vector<vector<string>> all_commands;
-    all_commands.push_back(vector<string>());
+    vector<Command> all_commands;
+    all_commands.push_back(Command(vector<string>(), "", "", "", nullptr));
 
     int cur_command = 0;
 
@@ -77,8 +77,8 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
                 else
                 {
                     /* Just add command and create new one. Nice and simple. */
-                    all_commands[cur_command].push_back(full_token);
-                    all_commands.push_back(vector<string>());
+                    all_commands[cur_command].add_token(full_token);
+                    all_commands.push_back(Command(vector<string>(), "", "", "", nullptr));
                     cur_command++;
                     should_add = false;
                 }
@@ -99,17 +99,19 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
             }
         }
         if (should_add)
-            all_commands[cur_command].push_back(full_token);
+            all_commands[cur_command].add_token(full_token);
     }
 
     for (unsigned int i = 0; i < all_commands.size(); i++)
     {
-        all_commands[i][0] = find_command_path(all_commands[i][0], env);
-        int ret_code = expand_relative_paths(all_commands[i], env);
+        all_commands[i].set_command(find_command_path
+                (all_commands[i].get_command(), env));
+        int ret_code = expand_relative_paths
+            (all_commands[i].get_tokens_vec(), env);
         if (ret_code == -1)
         {
             perror("Error: Invalid relative path.\n");
-            vector<vector<string>> s;
+            vector<Command> s;
             return s;
         }
     }
