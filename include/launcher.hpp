@@ -5,6 +5,6 @@
 #include <string>
 #include <common_classes.hpp>
 
-int launch_command(std::vector<std::string> &tokens, Environment* env);
+int launch_command(Command* c, Environment* env);
 
 #endif
