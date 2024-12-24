@@ -193,6 +193,25 @@ bool Command::redirect_streams()
             out_app = err_app;
             i++;
         }
+        else if (tokens[i].compare("<") == 0)
+        {
+
+            if (i == tokens.size() - 1)
+            {
+                fprintf(stderr,
+                        "Error: Input redirection must be given a file\n");
+                return false;
+            }
+        
+            if (in.compare("") != 0)
+            {
+                fprintf(stderr, 
+                        "Error: Command cannot have multiple redirections.\n");
+                return false;
+            } 
+            in = tokens[i+1];
+            i++;
+        }
         else
         {
             new_tokens.push_back(tokens[i]);
