@@ -21,7 +21,7 @@ Easily Extendible Shell is a custom shell written in C++, created as a learning 
 - Clone the repository:
     ```bash
     git clone https://github.com/a-trumier/eesh
-    cd easily-extendible-shell
+    cd eesh
     ```
 
 - Compile the project:
@@ -30,7 +30,7 @@ Easily Extendible Shell is a custom shell written in C++, created as a learning 
     ```
 - Run the shell:
     ```bash
-    ./eesh
+    ./bin/eesh
     ```
 ## Usage
 
