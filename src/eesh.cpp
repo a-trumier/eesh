@@ -14,10 +14,14 @@ int main()
     {
         fprintf(stdout, env1.get_value("PS1").c_str());
         std::string input = clean_whitespace(read_input());
+        if (input.compare("") == 0)
+        {
+            continue;
+        }
         std::vector<std::string> tokenized = tokenize_input(input); 
         std::vector<Command> full = generate_commands(tokenized, &env1);
 
-        int code;
+        int code = 0;
         for (unsigned int i = 0; i < full.size(); i++)
         {
             full[i].redirect_streams();
