@@ -12,14 +12,15 @@ int main()
     
     while (1)
     {
-        printf(env1.get_value("PS1").c_str());
+        fprintf(stdout, env1.get_value("PS1").c_str());
         std::string input = clean_whitespace(read_input());
         std::vector<std::string> tokenized = tokenize_input(input); 
         std::vector<Command> full = generate_commands(tokenized, &env1);
-       
+
         int code;
         for (unsigned int i = 0; i < full.size(); i++)
         {
+            full[i].redirect_streams();
             code = launch_command(&full[i], &env1);
         }
         /* Specific return codes from launch_commands */

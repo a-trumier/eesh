@@ -51,7 +51,7 @@ vector<Command> generate_commands(vector<string> input,
         Environment *env)
 {
     vector<Command> all_commands;
-    all_commands.push_back(Command(vector<string>(), "", "", "", nullptr));
+    all_commands.push_back(Command(vector<string>()));
 
     int cur_command = 0;
 
@@ -78,7 +78,7 @@ vector<Command> generate_commands(vector<string> input,
                 {
                     /* Just add command and create new one. Nice and simple. */
                     all_commands[cur_command].add_token(full_token);
-                    all_commands.push_back(Command(vector<string>(), "", "", "", nullptr));
+                    all_commands.push_back(Command(vector<string>()));
                     cur_command++;
                     should_add = false;
                 }

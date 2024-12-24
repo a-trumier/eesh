@@ -19,16 +19,18 @@ class Command
         std::string out;
         std::string err;
 
+        /* Whether or not we should append to the stdout and stderr. */
+        bool out_app;
+        bool err_app;
+
         Command* piped_to;
 
     public:
 
         /*
-         * Constructs command with tokens t, with stdin i, stdout o, and
-         * stderr e, and to be piped to p.
+         * Constructs command with tokens t.
          */
-        Command(std::vector<std::string> t, std::string i, std::string o, 
-                std::string e, Command* p);
+        Command(std::vector<std::string> t);
 
         /* 
          * Returns the pointer array that contains the tokens of the array,
@@ -52,6 +54,19 @@ class Command
         std::string get_command();
 
         void set_command(std::string new_cmd);
+
+        /*
+         * Attempts to find output redirections. Returs true if it worked
+         * correctly, false if not.
+         */
+        bool redirect_streams();
+
+        std::string get_in();
+        std::string get_out();
+        std::string get_err();
+
+        bool get_out_app();
+        bool get_err_app();
 };
 
 /*

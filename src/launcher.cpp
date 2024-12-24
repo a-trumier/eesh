@@ -150,6 +150,37 @@ int launch_command(Command* c, Environment* env)
         {
             std::string change_path = env->get_value("PWD") + "/";
             int r_val = chdir(change_path.c_str());
+            
+            if (c->get_in().compare("") != 0)
+            {
+                freopen(c->get_in().c_str(), "r", stdin);
+            }
+
+            if (c->get_out().compare("") != 0)
+            {
+                if (c->get_out_app())
+                {
+                    freopen(c->get_out().c_str(), "a", stdout);
+                }
+                else
+                {
+                    freopen(c->get_out().c_str(), "w", stdout);
+                }
+            }
+
+
+            if (c->get_err().compare("") != 0)
+            {
+                if (c->get_err_app())
+                {
+                    freopen(c->get_err().c_str(), "a", stdout);
+                }
+                else
+                {
+                    freopen(c->get_err().c_str(), "w", stdout);
+                }
+            }
+
             if (r_val < 0)
             {
                 printf("Chdir error: %d\n", r_val);
