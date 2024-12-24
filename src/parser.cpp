@@ -47,11 +47,11 @@ int expand_relative_paths(vector<string> input, Environment* env)
     return 0;
 }
 
-vector<vector<string>> generate_parsed_tokens(vector<string> input, 
+vector<Command> generate_commands(vector<string> input, 
         Environment *env)
 {
-    vector<vector<string>> all_commands;
-    all_commands.push_back(vector<string>());
+    vector<Command> all_commands;
+    all_commands.push_back(Command(vector<string>()));
 
     int cur_command = 0;
 
@@ -59,6 +59,7 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
     {
         string full_token = "";
         bool should_add = true;
+        bool quotation = false;
         for (unsigned long int j = 0; j < input[i].length(); j++)
         {
             /* 
@@ -66,24 +67,24 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
              * AND is the last of the string, then bingo we can create a 
              * new command.
              */
-            if (input[i][j] == ';')
+            if (input[i][j] == ';' && !quotation)
             {
                 if (j != input[i].length() - 1)
                 {
                     /* Error out in this case */
-                    perror("Error: Invalid use of a semi-colon.\n");
+                    fprintf(stderr, "Error: Invalid use of a semi-colon.\n");
                     return all_commands;
                 }
                 else
                 {
                     /* Just add command and create new one. Nice and simple. */
-                    all_commands[cur_command].push_back(full_token);
-                    all_commands.push_back(vector<string>());
+                    all_commands[cur_command].add_token(full_token);
+                    all_commands.push_back(Command(vector<string>()));
                     cur_command++;
                     should_add = false;
                 }
             }
-            else if (input[i][j] == '$')
+            else if (input[i][j] == '$' && !quotation)
             {
                 string name = "";
                 for (unsigned int k = (j + 1); k < input[i].size(); k++)
@@ -93,23 +94,48 @@ vector<vector<string>> generate_parsed_tokens(vector<string> input,
                 full_token += env->get_value(name);
                 break;
             }
+            /* Single quote statements */
+            else if (input[i][j] == 39 && !quotation)
+            {
+                quotation = true;
+            }
+            else if (input[i][j] == 39 && quotation)
+            {
+                quotation = false;
+            }
+            else if (input[i][j] == '"')
+            {
+                continue;
+            }
             else
             {
                 full_token += input[i][j];
             }
         }
         if (should_add)
-            all_commands[cur_command].push_back(full_token);
+            all_commands[cur_command].add_token(full_token);
+        if (quotation)
+        {
+            /*
+             * This only happens if we reach the end of a token and have not
+             * found a second quotation mark. In this case, say its invalid
+             * and don't do anything.
+             */
+            fprintf(stderr, "Error: Invalid use of quotation mark.\n");
+            return vector<Command>();
+        }
     }
 
     for (unsigned int i = 0; i < all_commands.size(); i++)
     {
-        all_commands[i][0] = find_command_path(all_commands[i][0], env);
-        int ret_code = expand_relative_paths(all_commands[i], env);
+        all_commands[i].set_command(find_command_path
+                (all_commands[i].get_command(), env));
+        int ret_code = expand_relative_paths
+            (all_commands[i].get_tokens_vec(), env);
         if (ret_code == -1)
         {
-            perror("Error: Invalid relative path.\n");
-            vector<vector<string>> s;
+            fprintf(stderr, "Error: Invalid relative path.\n");
+            vector<Command> s;
             return s;
         }
     }

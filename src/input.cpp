@@ -30,7 +30,8 @@ std::string read_input(void)
             return buf;
         }
         /* Otherwise, just add to the buffer and iterate */
-        else
+        if (cur_char >= 32 && cur_char <= 255 && cur_char != 160 &&
+                cur_char != 127)
         {
             buf += cur_char;
         }
@@ -44,10 +45,12 @@ std::vector<std::string> tokenize_input(std::string &inp)
     long unsigned int i = 0;
 
     std::string cur_token = "";
+    bool quotation = false;
     while (i < inp.length())
     {
+
         /* White space delimting a token. */
-        if ((inp[i] == ' ' && (i + 1) < inp.length())
+        if ((inp[i] == ' ' && (i + 1) < inp.length() && !quotation)
                 || (inp[i] == '\n' && (i + 1) < inp.length()) 
                 || (inp[i] == EOF && (i + 1) < inp.length()))
         {
@@ -65,7 +68,22 @@ std::vector<std::string> tokenize_input(std::string &inp)
         }
         else
         {
-            cur_token += inp[i];
+            /*
+             * This part is really bad. TODO: Make this statement not look
+             * terrible
+             */
+            if (inp[i] == '"' && !quotation)
+            {
+                quotation = true;
+                cur_token += inp[i];
+            }
+            else if (inp[i] == '"' && quotation)
+            {
+                quotation = false;
+                cur_token += inp[i];
+            }
+            else
+                cur_token += inp[i];
         }
         i++;
     }
