@@ -1,0 +1,5 @@
+ls -l,ls -l
+d d w   e r,d d w   e r
+l   l   l       l,l   l   l       l
+\b\b\b\b\b\b\r\r\rls \t\t\t\t\t\t -l,\b\b\b\b\b\b\r\r\rls \t\t\t\t\t\t -l
+ls,ls
