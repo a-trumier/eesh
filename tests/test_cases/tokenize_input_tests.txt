@@ -1,0 +1,2 @@
+ls -l -a,[ls -l -a]
+dsa d fa w e tr d c a we,[dsa d fa w e tr d c a we]

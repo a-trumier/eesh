@@ -11,7 +11,7 @@ BINARIES := $(SOURCES:.cpp=)
 .PHONY: all clean
 
 # Default target: build all binaries
-all: build/input.o build/read_input_test
+all: build/input.o build/read_input_test build/tokenize_input_test
 
 build/input.o: ../src/input.cpp
 	@mkdir -p build
@@ -21,6 +21,12 @@ build/read_input_test: build/read_input_test.o
 	$(CXX) $(LDFLAGS) -o $@ $< build/input.o
 
 build/read_input_test.o: read_input_test.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+build/tokenize_input_test: build/tokenize_input_test.o
+	$(CXX) $(LDFLAGS) -o $@ $< build/input.o
+
+build/tokenize_input_test.o: tokenize_input_test.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 # Clean up binaries
