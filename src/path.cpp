@@ -118,6 +118,11 @@ std::string find_command_path(std::string command, Environment* env)
      * and don't worry about it. TODO: Optimize this, perhaps a member in env
      * class or an enum or something. This just causes headache.
      */
+    if (command[0] == '/')
+    {
+        /* In this case we have been given an absolute path. So just execute it */
+        return command;
+    }
     if (command == "exit" || command == "cd" || command == "export")
     {
         return command;

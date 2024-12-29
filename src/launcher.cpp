@@ -122,7 +122,7 @@ int launch_command(Command* c, Environment* env)
          */
         fprintf(stderr, 
                 "Error: Command not found. Is it in your PATH variable?\n");
-        return 1;
+        return 127;
     }
 
     else if (c->get_command().compare("exit") == 0)
