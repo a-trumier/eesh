@@ -84,16 +84,6 @@ vector<Command> generate_commands(vector<string> input,
                     should_add = false;
                 }
             }
-            else if (input[i][j] == '$' && !quotation)
-            {
-                string name = "";
-                for (unsigned int k = (j + 1); k < input[i].size(); k++)
-                {
-                    name += input[i][k];
-                }
-                full_token += env->get_value(name);
-                break;
-            }
             /* Single quote statements */
             else if (input[i][j] == 39 && !quotation)
             {

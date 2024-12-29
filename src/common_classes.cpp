@@ -286,3 +286,15 @@ bool Command::get_err_app()
 {
     return err_app;
 }
+
+void Command::expand_variables(Environment* env)
+{
+    for (unsigned long int i = 0; i < tokens.size(); i++)
+    {
+        if (tokens[i][0] == '$')
+        {
+            std::string var = tokens[i].substr(1);
+            tokens[i] = env->get_value(var);
+        }
+    }
+}
