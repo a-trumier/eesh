@@ -11,7 +11,7 @@ def run_test(title: str, exp_code: int, exp_output: str, inp: str) -> None:
               f"  -> Testing {title}. Given {inp}, expected {exp_output}, received {p.stdout}.")
         print(f"stderr: {p.stderr}")
     elif (p.returncode != exp_code):
-        print(Fore.RED + "[FAIL]" + Style.RESET_ALL + f" -> Testing {title}. Given {inp}, expected code {exp_code}, received {p.returncode}") 
+        print(Fore.RED + "[FAIL]" + Style.RESET_ALL + f"-> Testing {title}. Given {inp}, expected code {exp_code}, received {p.returncode}") 
         print(f"stderr: {p.stderr}")
     else:
         print(Fore.GREEN + "[PASS]" + Style.RESET_ALL)
