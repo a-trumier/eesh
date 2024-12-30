@@ -249,7 +249,10 @@ void Command::add_token(std::string tok)
 
 std::string Command::get_command()
 {
-    return tokens[0];
+    if (tokens.size() == 0)
+        return "";
+    else
+        return tokens[0];
 }
 
 void Command::set_command(std::string new_cmd)
@@ -297,4 +300,14 @@ void Command::expand_variables(Environment* env)
             tokens[i] = env->get_value(var);
         }
     }
+}
+
+void Command::set_pipe(Command* cmd)
+{
+    piped_to = cmd;
+}
+
+Command* Command::get_pipe()
+{
+    return piped_to;
 }

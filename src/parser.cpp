@@ -66,7 +66,15 @@ vector<Command> generate_commands(vector<string> input,
         {
             all_commands.push_back(Command(vector<string>()));
             cur_command++;
-            should_add = false;
+            continue;
+        }
+        if (input[i].compare("|") == 0)
+        {
+            Command new_cmd = Command(vector<string>());
+            all_commands[cur_command].set_pipe(&new_cmd);
+            all_commands.push_back(new_cmd);
+            cur_command++;
+            continue;
         }
         for (unsigned long int j = 0; j < input[i].length(); j++)
         {
@@ -134,17 +142,23 @@ vector<Command> generate_commands(vector<string> input,
 
     for (unsigned int i = 0; i < all_commands.size(); i++)
     {
+        if (all_commands[i].get_command().compare("") == 0)
+        {
+            fprintf(stderr, "Error: Invalid command.\n");
+            vector<Command> s;
+            return s;
+        }
         all_commands[i].set_command(find_command_path
                 (all_commands[i].get_command(), env));
         int ret_code = expand_relative_paths
             (all_commands[i].get_tokens_vec(), env);
         if (ret_code == -1)
         {
-            fprintf(stderr, "Error: Invalid relative path.\n");
             vector<Command> s;
             return s;
         }
     }
+    printf("Returning commands\n");
     return all_commands;
 }
 

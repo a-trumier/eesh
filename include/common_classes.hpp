@@ -93,6 +93,10 @@ class Command
 
         bool get_out_app();
         bool get_err_app();
+        
+        void set_pipe(Command* cmd);
+
+        Command* get_pipe();
 };
 
 #endif
