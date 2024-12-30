@@ -61,6 +61,13 @@ vector<Command> generate_commands(vector<string> input,
         bool should_add = true;
         bool quotation = false;
         bool dbl_quote = false;
+        
+        if (input[i].compare("&&") == 0)
+        {
+            all_commands.push_back(Command(vector<string>()));
+            cur_command++;
+            should_add = false;
+        }
         for (unsigned long int j = 0; j < input[i].length(); j++)
         {
             /* 
