@@ -1,6 +1,7 @@
 # Basic commands and expected output
 "actual command", 0, "hello", "/bin/echo hello"
 "actual command", 0, "Hello World", "echo Hello World"
+# this following line needs to be changed to where your git is stored on your machine, from your PWD
 "actual command", 0, "43 ./projects/eesh/dev/test/test_script.py", "wc -l ./projects/eesh/dev/test/test_script.py"
 
 # Redirecting output or piping
