@@ -110,22 +110,9 @@ int builtin_export(Command* c, Environment* env)
 int launch_command(Command* c, Environment* env)
 {
     pid_t pid, wpid;
-    int status_code;
+    int status_code = 0;
 
-    if (c->get_command().length() == 0)
-    {
-        /*
-         * Solves weird error with perror call, when I replace this with perror
-         * it prints no such file or directory even though i'm not forking.
-         * Probably an RTFM moment but I cannot be bothered at this moment.
-         * TODO: Fix this garbage?
-         */
-        fprintf(stderr, 
-                "Error: Command not found. Is it in your PATH variable?\n");
-        return 127;
-    }
-
-    else if (c->get_command().compare("exit") == 0)
+    if (c->get_command().compare("exit") == 0)
     {
         return builtin_exit();
     }
@@ -173,13 +160,20 @@ int launch_command(Command* c, Environment* env)
             {
                 if (c->get_err_app())
                 {
-                    freopen(c->get_err().c_str(), "a", stdout);
+                    freopen(c->get_err().c_str(), "a", stderr);
                 }
                 else
                 {
-                    freopen(c->get_err().c_str(), "w", stdout);
+                    freopen(c->get_err().c_str(), "w", stderr);
                 }
             }
+
+            if (c->get_command().length() == 0)
+                {
+                    fprintf(stderr, 
+                    "Error: Command not found. Is it in your PATH variable?\n");
+                    exit(127);
+                }
 
             if (r_val < 0)
             {
@@ -190,7 +184,7 @@ int launch_command(Command* c, Environment* env)
             {
                 perror("Error");
                 /* Need to exit here because we are in child process. */
-                exit(1);
+                exit(status_code);
             }
             /* Should never get to this level. Failsafe */
             exit(1);
@@ -208,8 +202,7 @@ int launch_command(Command* c, Environment* env)
             } 
             while (!WIFEXITED(status_code) && !WIFSIGNALED(status_code));
         }
-
         c->free_tokens(args, c->get_tokens_vec().size() + 1);
-        return 0;
+        return status_code;
     }
 }
