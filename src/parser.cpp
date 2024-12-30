@@ -60,6 +60,7 @@ vector<Command> generate_commands(vector<string> input,
         string full_token = "";
         bool should_add = true;
         bool quotation = false;
+        bool dbl_quote = false;
         for (unsigned long int j = 0; j < input[i].length(); j++)
         {
             /* 
@@ -84,16 +85,6 @@ vector<Command> generate_commands(vector<string> input,
                     should_add = false;
                 }
             }
-            else if (input[i][j] == '$' && !quotation)
-            {
-                string name = "";
-                for (unsigned int k = (j + 1); k < input[i].size(); k++)
-                {
-                    name += input[i][k];
-                }
-                full_token += env->get_value(name);
-                break;
-            }
             /* Single quote statements */
             else if (input[i][j] == 39 && !quotation)
             {
@@ -105,7 +96,10 @@ vector<Command> generate_commands(vector<string> input,
             }
             else if (input[i][j] == '"')
             {
-                continue;
+                if (dbl_quote)
+                    dbl_quote = false;
+                else
+                    dbl_quote = true;
             }
             else
             {
@@ -121,6 +115,11 @@ vector<Command> generate_commands(vector<string> input,
              * found a second quotation mark. In this case, say its invalid
              * and don't do anything.
              */
+            fprintf(stderr, "Error: Invalid use of quotation mark.\n");
+            return vector<Command>();
+        }
+        if (dbl_quote)
+        {
             fprintf(stderr, "Error: Invalid use of quotation mark.\n");
             return vector<Command>();
         }

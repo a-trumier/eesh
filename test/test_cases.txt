@@ -1,0 +1,17 @@
+# Basic commands and expected output
+"actual command", 0, "hello", "/bin/echo hello"
+"actual command", 0, "Hello World", "echo Hello World"
+"actual command", 0, "43 ./projects/eesh/dev/test/test_script.py", "wc -l ./projects/eesh/dev/test/test_script.py"
+
+# Redirecting output or piping
+"redirection to file", 0, "test", "echo test > testfile; cat testfile; rm testfile"
+"redirecting stderr", 0, "/usr/bin/ls: cannot access 'dhsad': No such file or directory", "ls dhsad 2> test.txt; cat test.txt; rm test.txt"
+
+# variables
+"simple variable assignment", 0, "5", "export x 5; echo $x"
+
+# edge cases
+"empty command", 0, "", ""
+"invalid command", 127, "", "invalidcommand"
+"recursive variable expansion", 0, "hello", "export y hello; export x $y; echo $y"
+"unterminated quote", 1, "", "echo \"unterminated"
