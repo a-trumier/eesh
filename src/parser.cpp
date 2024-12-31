@@ -72,6 +72,9 @@ vector<Command> generate_commands(vector<string> input,
         {
             Command new_cmd = Command(vector<string>());
             all_commands[cur_command].set_pipe(&new_cmd);
+            all_commands[cur_command].set_out("pipe");
+            printf("Current command out: %s\n", all_commands[cur_command].get_out().c_str());
+            new_cmd.set_in("pipe");
             all_commands.push_back(new_cmd);
             cur_command++;
             continue;
@@ -158,7 +161,6 @@ vector<Command> generate_commands(vector<string> input,
             return s;
         }
     }
-    printf("Returning commands\n");
     return all_commands;
 }
 

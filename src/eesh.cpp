@@ -86,10 +86,6 @@ int main(int argc, char* argv[])
         }
         for (unsigned int i = 0; i < full.size(); i++)
         {
-            if (full[i].get_command().compare("") == 0)
-            {
-                continue;
-            }
             full[i].redirect_streams();
             full[i].expand_variables(&env1);
             code = launch_command(&full[i], &env1);

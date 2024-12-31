@@ -131,6 +131,21 @@ int launch_command(Command* c, Environment* env)
 
         char** args = c->get_tokens();
 
+
+        if (c->get_pipe() != nullptr)
+        {
+            int p[2];
+            if (pipe(p) < 0)
+            {
+                fprintf(stderr, "Error: Pipe error.\n");
+                exit(1);
+            }
+            c->set_pipe_descr(p);
+            Command* next = c->get_pipe();
+            
+            next->set_pipe_descr(p);
+        }
+
         pid = fork();
         /* Child case */
         if (pid == 0)
@@ -140,12 +155,33 @@ int launch_command(Command* c, Environment* env)
             
             if (c->get_in().compare("") != 0)
             {
-                freopen(c->get_in().c_str(), "r", stdin);
+                /* If this is true, then we can set stdin to pipe using dup2*/
+                if (c->get_in().compare("pipe") == 0)
+                {
+                    fprintf(stderr ,"Get in is a pipe.\n");
+                    close(STDIN_FILENO);
+                    dup(c->get_pipe_descr()[0]);
+                    //close(c->get_pipe_descr()[0]);
+                    //close(c->get_pipe_descr()[1]);
+                }
+                else
+                {
+                    /* Otherwise it is a redirection. */
+                    freopen(c->get_in().c_str(), "r", stdin);
+                }
             }
 
             if (c->get_out().compare("") != 0)
             {
-                if (c->get_out_app())
+                if (c->get_out().compare("pipe") == 0)
+                {
+                    printf("Get out is pipe\n");
+                    close(STDOUT_FILENO);
+                    dup(c->get_pipe_descr()[1]);
+                    //close(c->get_pipe_descr()[0]);
+                    //close(c->get_pipe_descr()[1]);
+                }
+                else if (c->get_out_app())
                 {
                     freopen(c->get_out().c_str(), "a", stdout);
                 }
@@ -168,18 +204,21 @@ int launch_command(Command* c, Environment* env)
                 }
             }
 
+            printf("Got past redirection\n");
             if (c->get_command().length() == 0)
-                {
-                    fprintf(stderr, 
-                    "Error: Command not found. Is it in your PATH variable?\n");
-                    exit(127);
-                }
+            {
+                fprintf(stderr, 
+                "Error: Command not found. Is it in your PATH variable?\n");
+                exit(127);
+            }
+            printf("Got past command length\n");
 
             if (r_val < 0)
             {
                 printf("Chdir error: %d\n", r_val);
                 exit(0);
             }
+            printf("Got past chdir error. Execcing\n");
             if (execvp(args[0], args) == -1)
             {
                 perror("Error");

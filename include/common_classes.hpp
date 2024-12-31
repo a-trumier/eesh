@@ -49,6 +49,8 @@ class Command
 
         Command* piped_to;
 
+        int* pipe_descr;
+
     public:
 
         /*
@@ -87,6 +89,10 @@ class Command
 
         void expand_variables(Environment* env);
 
+        void set_in(std::string nin);
+        void set_out(std::string nout);
+        void set_err(std::string nerr);
+        
         std::string get_in();
         std::string get_out();
         std::string get_err();
@@ -97,6 +103,10 @@ class Command
         void set_pipe(Command* cmd);
 
         Command* get_pipe();
+
+        int* get_pipe_descr();
+
+        void set_pipe_descr(int* n);
 };
 
 #endif

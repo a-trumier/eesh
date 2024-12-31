@@ -69,6 +69,10 @@ bool Command::redirect_streams()
      */
 
     std::vector<std::string> new_tokens;
+    if (out.compare("") != 0 || in.compare("") != 0) 
+    {
+        return true;
+    }
     for (unsigned int i = 0; i < tokens.size(); i++)
     {
         if (tokens[i].compare(">") == 0 || tokens[i].compare("1>") == 0)
@@ -310,4 +314,29 @@ void Command::set_pipe(Command* cmd)
 Command* Command::get_pipe()
 {
     return piped_to;
+}
+
+int* Command::get_pipe_descr()
+{
+    return pipe_descr;
+}
+
+void Command::set_pipe_descr(int* n)
+{
+    pipe_descr = n;
+}
+
+void Command::set_in(std::string nin)
+{
+    in = nin;
+}
+
+void Command::set_out(std::string nout)
+{
+    out = nout;
+}
+
+void Command::set_err(std::string nerr)
+{
+    err = nerr;
 }
